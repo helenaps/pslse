@@ -325,9 +325,7 @@ static void _handle_ack(struct cxl_afu_h *afu)
 			_all_idle(afu);
 		} else {
 			memcpy(&(afu->mmio.data), data, sizeof(uint32_t));
-			debug_msg("KEM:0x%08x", afu->mmio.data);
 			afu->mmio.data = ntohl(afu->mmio.data);
-			debug_msg("KEM:0x%08x", afu->mmio.data);
 		}
 	}
 	afu->mmio.state = LIBCXL_REQ_IDLE;
