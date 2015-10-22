@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 
 	// Find first AFU in system
 	afu_h = cxl_afu_next(NULL);
-	afu_m = NULL;
+	afu_s = NULL;
 	if (!afu_h) {
 		fprintf(stderr, "FAILED:No AFU found!\n");
 		goto done;
@@ -147,8 +147,8 @@ int main(int argc, char *argv[])
 	}
 
 	// Write WED value to slave MMIO space
-	if (cxl_mmio_write64(afu_m, 0x7f8, wed)) {
-		perror("FAILED:cxl_mmio_read64");
+	if (cxl_mmio_write64(afu_s, 0x7f8, wed)) {
+		perror("FAILED:cxl_mmio_write64");
 		goto done;
 	}
 
@@ -163,8 +163,8 @@ int main(int argc, char *argv[])
 	// Check WED is found
 	if (wed_check != wed) {
 		printf("FAILED: WED value mismatch!\n");
-		printf("\tExpected: 0x%016"PRIx64, wed);
-		printf("\tActual  : 0x%016"PRIx64, wed_check);
+		printf("\tExpected: 0x%016"PRIx64"\n", wed);
+		printf("\tActual  : 0x%016"PRIx64"\n", wed_check);
 		goto done;
 	}
 
