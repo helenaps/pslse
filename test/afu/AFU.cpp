@@ -255,6 +255,8 @@ void AFU::resolve_mmio_descriptor_event(){
 
 void AFU::resolve_mmio_event(){
 
+	uint64_t addr = afu_event.mmio_address << 2;
+
 	// MMIO READ
 	if(afu_event.mmio_read){
 		uint64_t data = 0;
@@ -277,7 +279,7 @@ void AFU::resolve_mmio_event(){
 
 				data = machine_controller.get_machine_config(afu_event.mmio_address - MACHINE_CONFIG_OFFSET);
 				data = (data << 32) | machine_controller.get_machine_config(afu_event.mmio_address-MACHINE_CONFIG_OFFSET+1);
-				debug_msg("AFU: Read mmio data 64 address 0x%x, data %016lx", afu_event.mmio_address, data);
+				debug_msg("AFU: Read mmio data 64 address 0x%x, data %016lx", addr, data);
 			}
 			else{
 				data = machine_controller.get_machine_config(afu_event.mmio_address - MACHINE_CONFIG_OFFSET);
@@ -285,7 +287,7 @@ void AFU::resolve_mmio_event(){
 				// duplicate the desired 32-bit data in both top and bottom 32 bits
 				data = (data & 0xFFFFFFFF) | (data << 32);
 
-				debug_msg("AFU: Read mmio data 32 address 0x%x, data %08lx", afu_event.mmio_address, data);
+				debug_msg("AFU: Read mmio data 32 address 0x%x, data %08lx", addr, data);
 
 			}
 		}
@@ -314,16 +316,16 @@ void AFU::resolve_mmio_event(){
 			}
 		}
 		else{
-			debug_msg("MMIO Write address 0x%lx", afu_event.mmio_address);
+			debug_msg("MMIO Write address 0x%lx", addr);
 			if(afu_event.mmio_double == 1){
 				machine_controller.change_machine_config(afu_event.mmio_address - MACHINE_CONFIG_OFFSET+1, afu_event.mmio_wdata & 0xFFFFFFFF);
 				machine_controller.change_machine_config(afu_event.mmio_address - MACHINE_CONFIG_OFFSET, (afu_event.mmio_wdata & 0xFFFFFFFF00000000) >> 32);
-				debug_msg("AFU: Write MMIO data 64 address 0x%x, data %016lx", afu_event.mmio_address, afu_event.mmio_wdata);
+				debug_msg("AFU: Write MMIO data 64 address 0x%x, data %016lx", addr, afu_event.mmio_wdata);
 			}
 			else{
 				machine_controller.change_machine_config(afu_event.mmio_address - MACHINE_CONFIG_OFFSET, (afu_event.mmio_wdata & 0xFFFFFFFF));
 
-				debug_msg("AFU: Write MMIO data 32 address 0x%x, data %08lx", afu_event.mmio_address, afu_event.mmio_wdata);
+				debug_msg("AFU: Write MMIO data 32 address 0x%x, data %08lx", addr, afu_event.mmio_wdata);
 			}
 		}
 		if(psl_afu_mmio_ack(&afu_event, 0, 0) != PSL_SUCCESS)
