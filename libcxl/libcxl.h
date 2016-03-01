@@ -212,7 +212,7 @@ int cxl_mmio_read32(struct cxl_afu_h *afu, uint64_t offset, uint32_t * data);
  */
 //int cxl_mmio_install_sigbus_handler();
 
-/* FIXME FIXME Replace me with real functionality */
+/* Trying to FIXME FIXME Replace me with real functionality */
 static inline int
 cxl_get_cr_class(struct cxl_afu_h *afu __attribute__((unused)),
 		 long cr_num __attribute__((unused)),
